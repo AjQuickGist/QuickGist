@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Blog Demo</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            line-height: 1.6;
+            background-color: #f9f9fb;
+            color: #333;
+        }
+
+        a {
+            color: #0077cc;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Header styles */
+        header {
+            background-color: #212121;
+            color: white;
+            padding: 2rem 2rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1.2rem;
+        }
+
+        /* Navigation styles */
+        nav {
+            background-color: #0077cc;
+            color: white;
+            display: flex;
+            justify-content: center;
+            padding: 0.5rem 0;
+        }
+
+        nav a {
+            margin: 0 1rem;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        nav a:hover {
+            color: #ffd700;
+        }
+
+        /* Blog Layout */
+        .container {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .content {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .content h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #005fa3;
+        }
+
+        .content p {
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+            color: #555;
+        }
+
+        .content a {
+            font-weight: bold;
+            color: #0077cc;
+        }
+
+        .content a:hover {
+            color: #ff4500;
+        }
+
+        .sidebar {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #0077cc;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar li {
+            margin-bottom: 0.8rem;
+        }
+
+        .sidebar li a {
+            color: #333;
+            font-weight: bold;
+        }
+
+        .sidebar li a:hover {
+            color: #005fa3;
+        }
+
+        /* Footer styles */
+        footer {
+            background: #212121;
+            color: white;
+            text-align: center;
+            padding: 1rem 2rem;
+        }
+
+        footer p {
+            font-size: 0.9rem;
+        }
+
+
+        .popover {
+            position: absolute;
+            top: 300px;
+            left: 150px;
+            border: none;
+
+            width: auto;
+            min-width: 0;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-content: stretch;
+            align-items: stretch;
+
+
+            padding: 4px;
+            border-radius: 5px;
+            background: transparent;
+            transition: min-width 100ms ease, height 100ms ease;
+
+            * {
+                /*box-sizing: border-box;*/
+                transition: width 100ms ease, height 100ms ease;
+                z-index: 1;
+            }
+
+            &::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                border-radius: 5px;
+                width: 100%;
+                height: 100%;
+                opacity: 0;
+            }
+        }
+
+        .popover.tooltip {
+            justify-content: center;
+            align-items: center;
+
+            .logo {
+                height: 2.5rem;
+                width: 2.5rem;
+                animation: throb 1s linear infinite;
+                animation-direction: normal;
+                /*filter: hue-rotate(0deg);*/
+            }
+        }
+
+        .popover.open.dragging {
+            cursor: grabbing;
+        }
+
+        .popover.open {
+            cursor: grab;
+            align-content: flex-start;
+            align-items: stretch;
+            justify-content: flex-start;
+            justify-items: stretch;
+
+            min-width: 300px;
+
+            * {
+                background: transparent;
+            }
+
+            >.menu {
+                display: flex;
+                flex-direction: row;
+                align-content: flex-end;
+                align-items: flex-start;
+
+                >* {
+                    cursor: pointer;
+                    height: 1.5em;
+                }
+
+                svg {
+                    stroke: black;
+                }
+
+                >.logo {
+                    margin-right: auto;
+                    aspect-ratio: 1;
+                    /*animation: none;*/
+                }
+            }
+
+            &::before {
+                opacity: 1;
+                /* Blur effect */
+                /*mask-image: linear-gradient(90% black, transparent);*/
+                mask-image: linear-gradient(180deg, rgba(255,255,255,1) 50%, rgba(0,0,0,0) 90%);
+                background: rgba(255,255,255,0.4);
+                backdrop-filter: blur(10px);
+                z-index: 0;
+
+                /*box-shadow: !* Bottom and right depth effect *! inset -0.75px -0.5px rgba(255, 255, 255, 0.1),*/
+                /*    !* Top and left depth effect *! inset+0.75px+0.5px rgba(255, 255, 255, 0.025),*/
+                /*    !* Shadow effect *! 3px 2px 10px rgba(0, 0, 0, 0.25),*/
+                /*    !* Short subsurface effect *! inset 0px 0px 10px 5px rgba(255, 255, 255, 0.025),*/
+                /*    !* Long subsurface effect *! inset 0px 0px 40px 5px rgba(255, 255, 255, 0.025);*/
+            }
+        }
+
+
+        @keyframes throb {
+            0% {
+                scale: 100%;
+                filter: contrast(100%);
+            }
+
+            20% {
+                scale: 105%;
+                filter: contrast(150%);
+            }
+
+            80% {
+                scale: 95%;
+                filter: contrast(95%);
+            }
+
+            100% {
+                scale: 100%;
+                filter: contrast(100%);
+            }
+        }
+
+        .log {
+            img {
+                width: 100%;
+                height: 100%;
+            }
+            position: absolute;
+            top: 100px;
+            left: 100px;
+            width: 100px;
+            height: 100px;
+            background: transparent;
+            z-index: 10; /* Main div above the ::after */
+        }
+
+        .log::after {
+            backdrop-filter: blur(5px);
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200px; /* Make it bigger than the main div */
+            height: 200px;
+            mask-image: radial-gradient(circle, rgba(0,0,0,1) 50%, rgba(255,255,255,0) 60%);
+            /*background-color: rgba(52, 152, 219, 0.3); !* Semi-transparent background *!*/
+            z-index: -1; /* Places it behind the main div */
+            transform: translate(-50%, -50%); /* Centers it around the main div */
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="log">
+    <img src="logo128.png" alt="">
+
+</div>
+
+<div class="popover open">
+    <div class="menu">
+        <img class="logo" src="logo128.png" alt=""/>
+        <span>
+            <svg class="gist-exp-svg" xmlns="http://www.w3.org/2000/svg"
+                 width="100%" height="100%"
+                 fill="none"
+                 viewBox="0 0 24 24">
+                    <path
+                            d="M20 4L12 12M20 4V8.5M20 4H15.5M19 12.5V16.8C19 17.9201 19 18.4802 18.782 18.908C18.5903 19.2843 18.2843 19.5903 17.908 19.782C17.4802 20 16.9201 20 15.8 20H7.2C6.0799 20 5.51984 20 5.09202 19.782C4.71569 19.5903 4.40973 19.2843 4.21799 18.908C4 18.4802 4 17.9201 4 16.8V8.2C4 7.0799 4 6.51984 4.21799 6.09202C4.40973 5.71569 4.71569 5.40973 5.09202 5.21799C5.51984 5 6.07989 5 7.2 5H11.5"
+                            stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round"/>
+                </svg>
+        </span>
+        <span>
+                            <svg class="gist-close-svg"
+                                 xmlns="http://www.w3.org/2000/svg"
+                                 width="100%"
+                                 height="100%" viewBox="0 0 1024 1024">
+                    <path
+                            d="M195.2 195.2a64 64 0 0 1 90.496 0L512 421.504 738.304 195.2a64 64 0 0 1 90.496 90.496L602.496 512 828.8 738.304a64 64 0 0 1-90.496 90.496L512 602.496 285.696 828.8a64 64 0 0 1-90.496-90.496L421.504 512 195.2 285.696a64 64 0 0 1 0-90.496z"/>
+                </svg>
+        </span>
+    </div>
+    <div class="summary"></div>
+    <div class="content"></div>
+</div>
+
+<script type="text/javascript">
+    let isOpen = false
+    let isDragging = false
+
+    let xOffset = 0
+    let yOffset = 0
+
+    const popup = document.getElementsByClassName('popover')[0]
+
+    popup.addEventListener('mousedown', (ev) => {
+        isDragging = true
+        xOffset = popup.offsetLeft - ev.clientX
+        yOffset = popup.offsetTop - ev.clientY
+
+        if (yOffset < 0) {
+            // debugger;
+        }
+        popup.classList.add('dragging')
+        ev.preventDefault()
+    })
+
+    document.addEventListener('mousemove', (ev) => {
+        if (isDragging) {
+            popup.style.left = ev.clientX + xOffset + 'px'
+            popup.style.top = ev.clientY + yOffset + 'px'
+        }
+    })
+
+    document.addEventListener('mouseup', (ev) => {
+        isDragging = false
+        popup.classList.remove('dragging')
+    })
+
+    document.getElementsByClassName('logo')[0].onclick = (ev) => {
+        if (isOpen) {
+            popup.classList.replace('open', 'tooltip')
+        } else {
+            popup.classList.replace('tooltip', 'open')
+        }
+        isOpen = !isOpen
+        ev.preventDefault()
+    }
+</script>
+
+
+<header>
+    <h1>Tech Blog</h1>
+    <p>Insights and stories from the world of technology.</p>
+</header>
+
+<nav>
+    <a href="#">Home</a>
+    <a href="#">Blog</a>
+    <a href="#">Categories</a>
+    <a href="#">About</a>
+    <a href="#">Contact</a>
+</nav>
+
+<main class="container">
+    <!-- Main Content Area -->
+    <div class="content">
+        <h2>Understanding CSS Grid: A Beginner's Guide</h2>
+        <p>
+            CSS Grid is one of the most powerful layout systems available in
+            modern CSS. It allows
+            developers to create complex and responsive layouts with ease. In
+            this guide, we'll explore
+            the basics of CSS Grid and how to implement it in your projects.
+        </p>
+        <a href="#">Read more...</a>
+
+        <h2>The Evolution of JavaScript Frameworks</h2>
+        <p>
+            JavaScript frameworks have come a long way, from jQuery to modern
+            tools like React, Vue, and Angular.
+            This article takes a look at their history, strengths, and
+            weaknesses, helping developers choose
+            the right framework for their needs.
+        </p>
+        <a href="#">Read more...</a>
+
+        <h2>Top 10 VS Code Extensions for Productivity</h2>
+        <p>
+            Visual Studio Code is a favorite among developers due to its
+            flexibility and extensions. Here
+            are 10 must-have extensions that can significantly boost your
+            productivity.
+        </p>
+        <a href="#">Read more...</a>
+    </div>
+
+    <!-- Sidebar Area -->
+    <aside class="sidebar">
+        <h3>Recent Posts</h3>
+        <ul>
+            <li><a href="#">How to Use Flexbox Like a Pro</a></li>
+            <li><a href="#">Building Accessible Web Apps</a></li>
+            <li><a href="#">The Rise of TypeScript</a></li>
+            <li><a href="#">Creating Animations with CSS</a></li>
+            <li><a href="#">Top Tools for Front-End Developers</a></li>
+        </ul>
+
+        <h3>Categories</h3>
+        <ul>
+            <li><a href="#">Web Development</a></li>
+            <li><a href="#">JavaScript</a></li>
+            <li><a href="#">CSS & Design</a></li>
+            <li><a href="#">Programming Languages</a></li>
+            <li><a href="#">Tech Trends</a></li>
+        </ul>
+    </aside>
+</main>
+
+<footer>
+    <p>&copy; 2024 Tech Blog. All Rights Reserved.</p>
+</footer>
+</body>
+</html>
